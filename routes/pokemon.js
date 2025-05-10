@@ -52,14 +52,16 @@ router.get("/", async (req, res, next) => {
 
     let { name, type, limit, page } = result.data;
 
+    // Use a local variable for filtering to avoid mutating the global pokemons array
+    let filteredPokemons = [...pokemons];
     if (name) {
       name = name.toLowerCase();
-      pokemons = pokemons.filter((p) => p.name.toLowerCase().includes(name));
+      filteredPokemons = filteredPokemons.filter((p) => p.name.toLowerCase().includes(name));
     }
 
     if (type) {
       type = type.toLowerCase();
-      pokemons = pokemons.filter((p) =>
+      filteredPokemons = filteredPokemons.filter((p) =>
         p.types.some((t) => t.toLowerCase() === type)
       );
     }
@@ -69,8 +71,10 @@ router.get("/", async (req, res, next) => {
 
     const startIndex = (page - 1) * limit;
     const endIndex = startIndex + limit;
-    const paginatedData = pokemons.slice(startIndex, endIndex);
+    const paginatedData = filteredPokemons.slice(startIndex, endIndex);
 
+    // Log the outgoing response for debugging
+    console.log("[GET /pokemons] Responding with:", { data: paginatedData });
     res.status(200).json({ data: paginatedData });
   } catch (err) {
     next(err);
