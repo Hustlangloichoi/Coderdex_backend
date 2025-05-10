@@ -74,8 +74,8 @@ router.get("/", async (req, res, next) => {
     const paginatedData = filteredPokemons.slice(startIndex, endIndex);
 
     // Log the outgoing response for debugging
-    console.log("[GET /pokemons] Responding with:", { data: paginatedData });
-    res.status(200).json({ data: paginatedData });
+    console.log("[GET /pokemons] Responding with:", paginatedData);
+    res.status(200).json(paginatedData); // changed from { data: paginatedData } to paginatedData
   } catch (err) {
     next(err);
   }
